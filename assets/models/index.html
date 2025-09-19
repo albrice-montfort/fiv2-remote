@@ -28,52 +28,59 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .models-grid {
+        .assets-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
             margin-top: 30px;
         }
-        .model-category {
+        .asset-item {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             padding: 20px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            transition: all 0.3s ease;
         }
-        .model-category h3 {
-            margin-top: 0;
-            color: #66A22F;
-            border-bottom: 2px solid #66A22F;
-            padding-bottom: 10px;
+        .asset-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
         }
-        .model-list {
-            list-style: none;
-            padding: 0;
-        }
-        .model-list li {
-            margin: 10px 0;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 5px;
-            transition: background 0.3s ease;
-        }
-        .model-list li:hover {
+        .asset-preview {
+            width: 100%;
+            height: 150px;
             background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            color: #66A22F;
         }
-        .model-list a {
+        .asset-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #66A22F;
+        }
+        .asset-details {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 15px;
+        }
+        .download-btn {
+            background: linear-gradient(45deg, #66A22F, #0BA398);
             color: white;
             text-decoration: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .model-list a:hover {
-            color: #66A22F;
-        }
-        .file-size {
+            padding: 8px 16px;
+            border-radius: 5px;
             font-size: 0.9em;
-            opacity: 0.7;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        .download-btn:hover {
+            transform: scale(1.05);
         }
         .back-link {
             position: absolute;
@@ -89,6 +96,29 @@
         .back-link:hover {
             background: rgba(255, 255, 255, 0.2);
         }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .empty-state h3 {
+            color: #66A22F;
+            margin-bottom: 10px;
+        }
+        .info-box {
+            background: rgba(11, 163, 152, 0.2);
+            border: 1px solid #0BA398;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .info-box h3 {
+            color: #0BA398;
+            margin-top: 0;
+        }
     </style>
 </head>
 <body>
@@ -97,33 +127,21 @@
     <div class="container">
         <div class="header">
             <h1>🎨 Modèles 3D</h1>
-            <p>Modèles 3D optimisés pour le chargement web</p>
+            <p>Modèles 3D optimisés pour le web</p>
         </div>
 
-        <div class="models-grid">
-            <div class="model-category">
-                <h3>📦 Modèles Lourds</h3>
-                <p>Modèles de plus de 5MB, optimisés pour le chargement différé</p>
-                <ul class="model-list">
-                    <li><a href="heavy-models/">📁 Voir les modèles lourds <span class="file-size">→</span></a></li>
-                </ul>
+        
+            <div class="empty-state">
+                <h3>📁 Aucun fichier trouvé</h3>
+                <p>Ajoutez des fichiers dans ce dossier et relancez le script</p>
+                <p>Ils apparaîtront automatiquement ici !</p>
             </div>
+        
 
-            <div class="model-category">
-                <h3>⚡ Modèles Légers</h3>
-                <p>Modèles de moins de 1MB, chargement rapide</p>
-                <ul class="model-list">
-                    <li><a href="light-models/">📁 Voir les modèles légers <span class="file-size">→</span></a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div style="margin-top: 40px; padding: 20px; background: rgba(102, 162, 47, 0.2); border-radius: 10px; border: 1px solid #66A22F;">
-            <h3>🔗 URLs Directes</h3>
-            <p>Accès direct aux modèles pour le chargement programmatique :</p>
+        <div class="info-box">
+            <h3>🔗 Base URL pour les modèles 3d</h3>
             <div style="background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 5px; font-family: monospace; margin: 10px 0;">
-                <div>Base URL: https://albrice-montfort.github.io/fiv2-remote/assets/models/</div>
-                <div>Modèle lourd: https://albrice-montfort.github.io/fiv2-remote/assets/models/heavy-models/Fiv2_06M.glb</div>
+                https://albrice-montfort.github.io/fiv2-remote/assets/models/
             </div>
         </div>
     </div>

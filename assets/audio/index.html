@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio - Fractal Innov</title>
+    <title>Fichiers Audio - Fractal Innov</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -28,17 +28,59 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .empty-state {
-            text-align: center;
-            padding: 40px;
+        .assets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .asset-item {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
+            padding: 20px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            transition: all 0.3s ease;
         }
-        .empty-state h3 {
+        .asset-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .asset-preview {
+            width: 100%;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
             color: #66A22F;
+        }
+        .asset-name {
+            font-weight: bold;
             margin-bottom: 10px;
+            color: #66A22F;
+        }
+        .asset-details {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 15px;
+        }
+        .download-btn {
+            background: linear-gradient(45deg, #66A22F, #0BA398);
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        .download-btn:hover {
+            transform: scale(1.05);
         }
         .back-link {
             position: absolute;
@@ -54,12 +96,24 @@
         .back-link:hover {
             background: rgba(255, 255, 255, 0.2);
         }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .empty-state h3 {
+            color: #66A22F;
+            margin-bottom: 10px;
+        }
         .info-box {
             background: rgba(11, 163, 152, 0.2);
             border: 1px solid #0BA398;
             border-radius: 10px;
             padding: 20px;
-            margin-top: 20px;
+            margin-top: 30px;
         }
         .info-box h3 {
             color: #0BA398;
@@ -73,25 +127,16 @@
     <div class="container">
         <div class="header">
             <h1>🎵 Fichiers Audio</h1>
-            <p>Fichiers audio et sons pour vos projets interactifs</p>
+            <p>Fichiers audio et sons</p>
         </div>
 
-        <div class="empty-state">
-            <h3>📁 Dossier vide</h3>
-            <p>Aucun fichier audio n'est actuellement disponible dans ce dossier.</p>
-            <p>Les fichiers audio peuvent être ajoutés ici pour l'expérience sonore de vos projets.</p>
-        </div>
-
-        <div class="info-box">
-            <h3>💡 Recommandations pour les fichiers audio</h3>
-            <ul>
-                <li><strong>Format :</strong> MP3, OGG, ou WAV</li>
-                <li><strong>Qualité :</strong> 128-320 kbps pour MP3, 44.1kHz pour WAV</li>
-                <li><strong>Durée :</strong> Échantillons courts (1-30s) pour les sons d'interface</li>
-                <li><strong>Taille :</strong> Moins de 1MB par fichier pour le web</li>
-                <li><strong>Usage :</strong> Effets sonores, musique d'ambiance, notifications</li>
-            </ul>
-        </div>
+        
+            <div class="empty-state">
+                <h3>📁 Aucun fichier trouvé</h3>
+                <p>Ajoutez des fichiers dans ce dossier et relancez le script</p>
+                <p>Ils apparaîtront automatiquement ici !</p>
+            </div>
+        
 
         <div class="info-box">
             <h3>🔗 Base URL pour les fichiers audio</h3>

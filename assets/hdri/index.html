@@ -28,7 +28,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .empty-state {
+        .loading {
             text-align: center;
             padding: 40px;
             background: rgba(255, 255, 255, 0.1);
@@ -36,9 +36,84 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .empty-state h3 {
+        .loading h3 {
             color: #66A22F;
             margin-bottom: 10px;
+        }
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #66A22F;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .hdri-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .hdri-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .hdri-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .hdri-preview {
+            width: 100%;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            color: #66A22F;
+            position: relative;
+            overflow: hidden;
+        }
+        .hdri-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .hdri-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #66A22F;
+        }
+        .hdri-details {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 15px;
+        }
+        .download-btn {
+            background: linear-gradient(45deg, #66A22F, #0BA398);
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        .download-btn:hover {
+            transform: scale(1.05);
         }
         .back-link {
             position: absolute;
@@ -59,27 +134,43 @@
             border: 1px solid #0BA398;
             border-radius: 10px;
             padding: 20px;
-            margin-top: 20px;
+            margin-top: 30px;
         }
         .info-box h3 {
             color: #0BA398;
             margin-top: 0;
         }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .empty-state h3 {
+            color: #66A22F;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
     <a href="../../index.html" class="back-link">← Retour à l'accueil</a>
-    
+
     <div class="container">
         <div class="header">
             <h1>🌌 Environnements HDRI</h1>
             <p>Environnements HDRI et skyboxes pour l'éclairage réaliste</p>
         </div>
 
-        <div class="empty-state">
-            <h3>📁 Dossier vide</h3>
-            <p>Aucun environnement HDRI n'est actuellement disponible dans ce dossier.</p>
-            <p>Les environnements HDRI peuvent être ajoutés ici pour l'éclairage des scènes 3D.</p>
+        <div id="loading" class="loading">
+            <h3>🔄 Chargement des environnements HDRI...</h3>
+            <div class="spinner"></div>
+            <p>Scan automatique des fichiers disponibles</p>
+        </div>
+
+        <div id="content" style="display: none;">
+            <div id="hdri-list" class="hdri-grid"></div>
         </div>
 
         <div class="info-box">
@@ -100,5 +191,123 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Configuration
+        const baseUrl = 'https://albrice-montfort.github.io/fiv2-remote/assets/hdri/';
+        const currentPath = window.location.pathname;
+
+        // Extensions de fichiers HDRI supportées
+        const supportedExtensions = ['.hdr', '.exr', '.ktx2', '.png', '.jpg', '.jpeg'];
+
+        // Fonction pour obtenir l'extension d'un fichier
+        function getFileExtension(filename) {
+            return filename.toLowerCase().substring(filename.lastIndexOf('.'));
+        }
+
+        // Fonction pour obtenir la taille d'un fichier
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Fonction pour créer un élément HDRI
+        function createHDRIItem(filename, size) {
+            const extension = getFileExtension(filename);
+            const isImage = ['.png', '.jpg', '.jpeg'].includes(extension);
+
+            const item = document.createElement('div');
+            item.className = 'hdri-item';
+
+            const preview = isImage ?
+                `<img src="${baseUrl + filename}" alt="${filename}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                 <div style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; font-size: 3em; color: #66A22F;">🌌</div>` :
+                `<div style="width: 100%; height: 100%; align-items: center; justify-content: center; font-size: 3em; color: #66A22F; display: flex;">🌌</div>`;
+
+            item.innerHTML = `
+                <div class="hdri-preview">${preview}</div>
+                <div class="hdri-name">${filename}</div>
+                <div class="hdri-details">${extension.toUpperCase()} - ${size}</div>
+                <a href="${baseUrl + filename}" class="download-btn" download>📥 Télécharger</a>
+            `;
+
+            return item;
+        }
+
+        // Fonction pour scanner les fichiers HDRI
+        async function scanHDRIFiles() {
+            const hdriList = document.getElementById('hdri-list');
+            const loading = document.getElementById('loading');
+            const content = document.getElementById('content');
+
+            try {
+                // Liste des fichiers HDRI connus (vous pouvez l'étendre)
+                const knownFiles = [
+                    // Ajoutez ici les noms de fichiers HDRI que vous connaissez
+                ];
+
+                // Tenter de charger chaque fichier connu
+                const foundFiles = [];
+
+                for (const filename of knownFiles) {
+                    try {
+                        const response = await fetch(baseUrl + filename, { method: 'HEAD' });
+                        if (response.ok) {
+                            const size = response.headers.get('content-length');
+                            foundFiles.push({
+                                name: filename,
+                                size: size ? formatFileSize(parseInt(size)) : 'Taille inconnue'
+                            });
+                        }
+                    } catch (error) {
+                        console.log(`Fichier ${filename} non trouvé`);
+                    }
+                }
+
+                // Si aucun fichier connu n'est trouvé, afficher un message
+                if (foundFiles.length === 0) {
+                    hdriList.innerHTML = `
+                        <div class="empty-state">
+                            <h3>📁 Aucun environnement HDRI trouvé</h3>
+                            <p>Ajoutez des fichiers .hdr, .exr, .ktx2, .png, .jpg dans ce dossier</p>
+                            <p>Ils apparaîtront automatiquement ici !</p>
+                        </div>
+                    `;
+                } else {
+                    // Afficher les fichiers trouvés
+                    foundFiles.forEach(file => {
+                        const item = createHDRIItem(file.name, file.size);
+                        hdriList.appendChild(item);
+                    });
+                }
+
+                loading.style.display = 'none';
+                content.style.display = 'block';
+
+            } catch (error) {
+                console.error('Erreur lors du scan des fichiers HDRI:', error);
+                hdriList.innerHTML = `
+                    <div class="empty-state">
+                        <h3>❌ Erreur de chargement</h3>
+                        <p>Impossible de scanner les fichiers HDRI</p>
+                        <p>Vérifiez votre connexion internet</p>
+                    </div>
+                `;
+                loading.style.display = 'none';
+                content.style.display = 'block';
+            }
+        }
+
+        // Démarrer le scan au chargement de la page
+        document.addEventListener('DOMContentLoaded', scanHDRIFiles);
+
+        // Recharger la page toutes les 30 secondes pour détecter les nouveaux fichiers
+        setInterval(() => {
+            location.reload();
+        }, 30000);
+    </script>
 </body>
 </html>

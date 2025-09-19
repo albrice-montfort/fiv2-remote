@@ -28,38 +28,59 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .textures-grid {
+        .assets-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
             margin-top: 30px;
         }
-        .texture-category {
+        .asset-item {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             padding: 20px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             text-align: center;
+            transition: all 0.3s ease;
         }
-        .texture-category h3 {
-            margin-top: 0;
+        .asset-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .asset-preview {
+            width: 100%;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
             color: #66A22F;
-            border-bottom: 2px solid #66A22F;
-            padding-bottom: 10px;
         }
-        .texture-category a {
-            display: inline-block;
-            padding: 10px 20px;
+        .asset-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #66A22F;
+        }
+        .asset-details {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 15px;
+        }
+        .download-btn {
             background: linear-gradient(45deg, #66A22F, #0BA398);
             color: white;
             text-decoration: none;
+            padding: 8px 16px;
             border-radius: 5px;
-            margin: 10px 0;
+            font-size: 0.9em;
+            display: inline-block;
             transition: transform 0.3s ease;
         }
-        .texture-category a:hover {
-            transform: translateY(-2px);
+        .download-btn:hover {
+            transform: scale(1.05);
         }
         .back-link {
             position: absolute;
@@ -75,38 +96,52 @@
         .back-link:hover {
             background: rgba(255, 255, 255, 0.2);
         }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .empty-state h3 {
+            color: #66A22F;
+            margin-bottom: 10px;
+        }
+        .info-box {
+            background: rgba(11, 163, 152, 0.2);
+            border: 1px solid #0BA398;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .info-box h3 {
+            color: #0BA398;
+            margin-top: 0;
+        }
     </style>
 </head>
 <body>
-    <a href="../index.html" class="back-link">← Retour aux assets</a>
+    <a href="../../index.html" class="back-link">← Retour à l'accueil</a>
     
     <div class="container">
         <div class="header">
             <h1>🖼️ Textures</h1>
-            <p>Textures et images haute qualité pour vos projets</p>
+            <p>Textures et images haute qualité</p>
         </div>
 
-        <div class="textures-grid">
-            <div class="texture-category">
-                <h3>📐 Textures HD</h3>
-                <p>Textures haute résolution (2K+)</p>
-                <a href="hd/">Voir les textures HD</a>
+        
+            <div class="empty-state">
+                <h3>📁 Aucun fichier trouvé</h3>
+                <p>Ajoutez des fichiers dans ce dossier et relancez le script</p>
+                <p>Ils apparaîtront automatiquement ici !</p>
             </div>
+        
 
-            <div class="texture-category">
-                <h3>🗜️ Textures Compressées</h3>
-                <p>Textures optimisées pour le web</p>
-                <a href="compressed/">Voir les textures compressées</a>
-            </div>
-        </div>
-
-        <div style="margin-top: 40px; padding: 20px; background: rgba(102, 162, 47, 0.2); border-radius: 10px; border: 1px solid #66A22F;">
-            <h3>🔗 URLs Directes</h3>
-            <p>Accès direct aux textures pour le chargement programmatique :</p>
+        <div class="info-box">
+            <h3>🔗 Base URL pour les textures</h3>
             <div style="background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 5px; font-family: monospace; margin: 10px 0;">
-                <div>Base URL: https://albrice-montfort.github.io/fiv2-remote/assets/textures/</div>
-                <div>Textures HD: https://albrice-montfort.github.io/fiv2-remote/assets/textures/hd/</div>
-                <div>Textures compressées: https://albrice-montfort.github.io/fiv2-remote/assets/textures/compressed/</div>
+                https://albrice-montfort.github.io/fiv2-remote/assets/textures/
             </div>
         </div>
     </div>
