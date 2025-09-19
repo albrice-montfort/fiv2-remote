@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Final - Fractal Innov</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-item {
+            margin: 15px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+        h1 { color: #333; text-align: center; }
+        .file-info {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        .download-btn {
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            margin: 5px;
+            display: inline-block;
+        }
+        .download-btn:hover {
+            background: #0056b3;
+        }
+        .progress {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background: #007bff;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Final - Fichiers HDRI</h1>
+        <p>Vérification que les fichiers HDRI ont la bonne taille après correction</p>
+        
+        <div id="loading" style="text-align: center; padding: 20px;">
+            <h3>🔄 Test en cours...</h3>
+            <p>Vérification des tailles de fichiers...</p>
+        </div>
+
+        <div id="content" style="display: none;">
+            <div id="test-results"></div>
+        </div>
+    </div>
+
+    <script>
+        const baseUrl = 'https://albrice-montfort.github.io/fiv2-remote/';
+        
+        const files = [
+            {
+                name: 'HDRI_Nebula02_4k.png',
+                url: 'assets/hdri/HDRI_Nebula02_4k.png',
+                expectedSize: 6720811, // 6.4MB en octets
+                expectedSizeText: '6.4MB'
+            },
+            {
+                name: 'HDRI_Nebula02_8k.png',
+                url: 'assets/hdri/HDRI_Nebula02_8k.png',
+                expectedSize: 38110541, // 36MB en octets
+                expectedSizeText: '36MB'
+            }
+        ];
+
+        async function testFileSize(file) {
+            const fullUrl = baseUrl + file.url;
+            
+            try {
+                const response = await fetch(fullUrl, { method: 'HEAD' });
+                
+                if (response.ok) {
+                    const actualSize = parseInt(response.headers.get('content-length') || '0');
+                    const expectedSize = file.expectedSize;
+                    
+                    // Tolérance de 5% pour les tailles
+                    const sizeMatch = Math.abs(actualSize - expectedSize) < (expectedSize * 0.05);
+                    
+                    return {
+                        success: true,
+                        name: file.name,
+                        url: fullUrl,
+                        expectedSize: file.expectedSizeText,
+                        actualSize: actualSize,
+                        actualSizeText: formatFileSize(actualSize),
+                        sizeMatch: sizeMatch,
+                        status: sizeMatch ? 'success' : 'warning',
+                        progress: Math.min((actualSize / expectedSize) * 100, 100)
+                    };
+                } else {
+                    return {
+                        success: false,
+                        name: file.name,
+                        url: fullUrl,
+                        error: `Erreur HTTP ${response.status}`,
+                        status: 'error'
+                    };
+                }
+            } catch (error) {
+                return {
+                    success: false,
+                    name: file.name,
+                    url: fullUrl,
+                    error: `Erreur réseau: ${error.message}`,
+                    status: 'error'
+                };
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        async function runTests() {
+            const results = [];
+            
+            for (const file of files) {
+                const result = await testFileSize(file);
+                results.push(result);
+            }
+            
+            displayResults(results);
+        }
+
+        function displayResults(results) {
+            const container = document.getElementById('test-results');
+            const loading = document.getElementById('loading');
+            
+            loading.style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            
+            let html = '';
+            let allSuccess = true;
+            
+            for (const result of results) {
+                if (!result.success || !result.sizeMatch) {
+                    allSuccess = false;
+                }
+                
+                html += `
+                    <div class="test-item">
+                        <h3>${result.name}</h3>
+                        <div class="file-info">
+                            <strong>URL:</strong> ${result.url}<br>
+                            <strong>Taille attendue:</strong> ${result.expectedSize || 'N/A'}<br>
+                            <strong>Taille réelle:</strong> ${result.actualSizeText || 'N/A'}<br>
+                            <strong>Status:</strong> <span class="status ${result.status}">
+                                ${result.success ? (result.sizeMatch ? '✅ Taille correcte' : '⚠️ Taille incorrecte') : '❌ Erreur'}
+                            </span>
+                        </div>
+                        ${result.success ? `
+                            <div class="progress">
+                                <div class="progress-bar" style="width: ${result.progress}%"></div>
+                            </div>
+                            <a href="${result.url}" class="download-btn" download>📥 Télécharger</a>
+                            <a href="${result.url}" class="download-btn" target="_blank">👁️ Ouvrir</a>
+                        ` : ''}
+                        ${result.error ? `<div class="status error">${result.error}</div>` : ''}
+                    </div>
+                `;
+            }
+            
+            // Résumé global
+            html += `
+                <div class="test-item" style="background: ${allSuccess ? '#d4edda' : '#f8d7da'}; border-color: ${allSuccess ? '#c3e6cb' : '#f5c6cb'};">
+                    <h3>📊 Résumé Global</h3>
+                    <div class="status ${allSuccess ? 'success' : 'error'}">
+                        ${allSuccess ? '🎉 Tous les fichiers ont la bonne taille !' : '⚠️ Certains fichiers ont encore des problèmes'}
+                    </div>
+                    <p>
+                        ${allSuccess ? 
+                            'Les fichiers HDRI sont maintenant correctement déployés sur GitHub Pages.' : 
+                            'Vérifiez que vous avez bien poussé les changements avec GitHub Desktop.'
+                        }
+                    </p>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        // Lancer les tests
+        runTests();
+    </script>
+</body>
+</html>
