@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modèles Légers - Fractal Innov</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #181A33 0%, #0BA398 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #66A22F, #0BA398);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .model-list {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            opacity: 0.7;
+        }
+        .empty-state h3 {
+            color: #66A22F;
+            margin-bottom: 10px;
+        }
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            backdrop-filter: blur(10px);
+        }
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .info-box {
+            background: rgba(11, 163, 152, 0.2);
+            border: 1px solid #0BA398;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .info-box h3 {
+            color: #0BA398;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <a href="../../../index.html" class="back-link">← Retour à l'accueil</a>
+    
+    <div class="container">
+        <div class="header">
+            <h1>⚡ Modèles 3D Légers</h1>
+            <p>Modèles de moins de 1MB - Chargement rapide</p>
+        </div>
+
+        <div class="model-list">
+            <div class="empty-state">
+                <h3>📁 Dossier vide</h3>
+                <p>Aucun modèle léger n'est actuellement disponible dans ce dossier.</p>
+                <p>Les modèles légers peuvent être ajoutés ici pour un chargement rapide.</p>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3>💡 Recommandations pour les modèles légers</h3>
+            <ul>
+                <li><strong>Taille :</strong> Moins de 1MB par fichier</li>
+                <li><strong>Format :</strong> GLB optimisé avec compression</li>
+                <li><strong>Géométrie :</strong> Polygones réduits, LODs multiples</li>
+                <li><strong>Textures :</strong> Résolution adaptée (512x512 max)</li>
+                <li><strong>Usage :</strong> Chargement immédiat, éléments UI, icônes 3D</li>
+            </ul>
+        </div>
+
+        <div class="info-box">
+            <h3>🔗 Base URL pour les modèles légers</h3>
+            <div style="background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 5px; font-family: monospace; margin: 10px 0;">
+                https://albrice-montfort.github.io/fiv2-remote/assets/models/light-models/
+            </div>
+        </div>
+    </div>
+</body>
+</html>

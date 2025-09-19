@@ -31,13 +31,13 @@ else
 - Test de disponibilité des assets
 
 Déployé automatiquement le $(date)"
-
+    
     echo "✅ Commit créé avec succès"
-
+    
     # Push vers GitHub
     echo "🌐 Déploiement sur GitHub Pages..."
     git push origin main
-
+    
     if [ $? -eq 0 ]; then
         echo "✅ Déploiement réussi !"
         echo ""
@@ -52,8 +52,6 @@ Déployé automatiquement le $(date)"
         echo "❌ Erreur lors du déploiement"
         echo "Vérifiez votre configuration Git et vos permissions GitHub"
     fi
-else
-    echo "ℹ️  Aucun changement à déployer"
 fi
 
 echo ""
