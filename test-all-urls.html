@@ -84,7 +84,7 @@
     <div class="container">
         <h1>🧪 Test de Toutes les URLs</h1>
         <p>Vérification que toutes les URLs sont correctes et fonctionnelles</p>
-        
+
         <div id="loading" style="text-align: center; padding: 20px;">
             <h3>🔄 Chargement des tests...</h3>
             <p>Vérification de toutes les URLs...</p>
@@ -120,7 +120,7 @@
 
     <script>
         const baseUrl = 'https://albrice-montfort.github.io/fiv2-remote/';
-        
+
         // Assets à tester avec leurs URLs correctes
         const assets = {
             hdri: [
@@ -181,10 +181,10 @@
         async function testAsset(asset, category) {
             const fullUrl = baseUrl + asset.url;
             const container = document.getElementById(category + '-list');
-            
+
             const testItem = document.createElement('div');
             testItem.className = 'test-item';
-            
+
             testItem.innerHTML = `
                 <div>
                     <strong>${asset.name}</strong> (${asset.size})<br>
@@ -193,11 +193,11 @@
                 <span class="status loading">⏳ Test...</span>
             `;
             container.appendChild(testItem);
-            
+
             try {
                 const response = await fetch(fullUrl, { method: 'HEAD' });
                 results.total++;
-                
+
                 if (response.ok) {
                     const size = response.headers.get('content-length');
                     const actualSize = size ? `(${(size / 1024 / 1024).toFixed(2)} MB)` : '';
@@ -247,12 +247,12 @@
                     container.innerHTML = '<div class="test-item"><div>Aucun fichier dans ce dossier</div><span class="status success">✅ OK</span></div>';
                 }
             }
-            
+
             // Afficher le contenu
             document.getElementById('loading').style.display = 'none';
             document.getElementById('content').style.display = 'block';
             document.getElementById('summary').style.display = 'block';
-            
+
             // Afficher le résumé
             const summaryContent = document.getElementById('summary-content');
             summaryContent.innerHTML = `
