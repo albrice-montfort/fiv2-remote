@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Assets - Fractal Innov</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-item {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .loading { background: #fff3cd; color: #856404; }
+        h1 { color: #333; }
+        h2 { color: #666; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test des Assets Fractal Innov</h1>
+        <p>Vérification de la disponibilité des assets sur GitHub Pages</p>
+
+        <h2>📦 Modèles 3D</h2>
+        <div id="models-tests"></div>
+
+        <h2>🖼️ Textures</h2>
+        <div id="textures-tests"></div>
+
+        <h2>📊 Résumé</h2>
+        <div id="summary"></div>
+    </div>
+
+    <script>
+        const baseUrl = 'https://albrice-montfort.github.io/fiv2-remote/';
+
+        const assets = {
+            models: [
+                'assets/models/heavy-models/Fiv2_06M.glb'
+            ],
+            textures: [
+                'assets/textures/hd/FIv2_UI01_2k.PNG',
+                'assets/textures/hd/FIv2_UI01A_2k.png',
+                'assets/textures/hd/FIv2_UI02_2k.png',
+                'assets/textures/hd/FIv2_UI03_2k.png',
+                'assets/textures/hd/FIv2_UI04_2k.png',
+                'assets/textures/hd/FIv2_UI05_2k.PNG',
+                'assets/textures/hd/FIv2_UI06_2k.png',
+                'assets/textures/hd/FIv2_UI07_2k.PNG'
+            ]
+        };
+
+        let results = {
+            success: 0,
+            error: 0,
+            total: 0
+        };
+
+        async function testAsset(url, category) {
+            const fullUrl = baseUrl + url;
+            const container = document.getElementById(category + '-tests');
+
+            const testItem = document.createElement('div');
+            testItem.className = 'test-item';
+            testItem.innerHTML = `
+                <span>${url}</span>
+                <span class="status loading">⏳ Test en cours...</span>
+            `;
+            container.appendChild(testItem);
+
+            try {
+                const response = await fetch(fullUrl, { method: 'HEAD' });
+                results.total++;
+
+                if (response.ok) {
+                    const size = response.headers.get('content-length');
+                    const sizeText = size ? `(${(size / 1024 / 1024).toFixed(2)} MB)` : '';
+                    testItem.innerHTML = `
+                        <span>${url}</span>
+                        <span class="status success">✅ Disponible ${sizeText}</span>
+                    `;
+                    results.success++;
+                } else {
+                    testItem.innerHTML = `
+                        <span>${url}</span>
+                        <span class="status error">❌ Erreur ${response.status}</span>
+                    `;
+                    results.error++;
+                }
+            } catch (error) {
+                results.total++;
+                testItem.innerHTML = `
+                    <span>${url}</span>
+                    <span class="status error">❌ Erreur réseau</span>
+                `;
+                results.error++;
+            }
+        }
+
+        async function runTests() {
+            // Tester les modèles
+            for (const model of assets.models) {
+                await testAsset(model, 'models');
+            }
+
+            // Tester les textures
+            for (const texture of assets.textures) {
+                await testAsset(texture, 'textures');
+            }
+
+            // Afficher le résumé
+            const summary = document.getElementById('summary');
+            summary.innerHTML = `
+                <div class="test-item">
+                    <span><strong>Total testé:</strong> ${results.total}</span>
+                    <span class="status success">✅ Réussis: ${results.success}</span>
+                </div>
+                <div class="test-item">
+                    <span><strong>Échecs:</strong> ${results.error}</span>
+                    <span class="status ${results.error > 0 ? 'error' : 'success'}">${results.error > 0 ? '❌' : '✅'} ${results.error}</span>
+                </div>
+                <div class="test-item">
+                    <span><strong>Taux de réussite:</strong> ${((results.success / results.total) * 100).toFixed(1)}%</span>
+                    <span class="status ${results.success === results.total ? 'success' : 'error'}">${results.success === results.total ? '🎉' : '⚠️'}</span>
+                </div>
+            `;
+        }
+
+        // Lancer les tests
+        runTests();
+    </script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fractal Innov - Assets Repository</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #181A33 0%, #0BA398 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #66A22F, #0BA398);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.8;
+        }
+        .assets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .asset-category {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .asset-category h3 {
+            margin-top: 0;
+            color: #66A22F;
+            border-bottom: 2px solid #66A22F;
+            padding-bottom: 10px;
+        }
+        .asset-list {
+            list-style: none;
+            padding: 0;
+        }
+        .asset-list li {
+            margin: 10px 0;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        .asset-list li:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .asset-list a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .asset-list a:hover {
+            color: #66A22F;
+        }
+        .file-size {
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+        .status {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(102, 162, 47, 0.2);
+            border-radius: 10px;
+            border: 1px solid #66A22F;
+        }
+        .status h2 {
+            margin-top: 0;
+            color: #66A22F;
+        }
+        .api-info {
+            background: rgba(11, 163, 152, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid #0BA398;
+        }
+        .api-info h3 {
+            color: #0BA398;
+            margin-top: 0;
+        }
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .asset-file {
+            display: block;
+            margin: 5px 0;
+            padding: 5px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Fractal Innov Assets</h1>
+            <p>Repository d'assets pour le chargement à distance</p>
+        </div>
+
+        <div class="status">
+            <h2>✅ Repository Actif</h2>
+            <p>Les assets sont disponibles pour le chargement à distance via GitHub Pages</p>
+        </div>
+
+        <div class="assets-grid">
+            <div class="asset-category">
+                <h3>🎨 Modèles 3D</h3>
+                <ul class="asset-list">
+                    <li><a href="assets/models/">📁 Modèles lourds <span class="file-size">-</span></a></li>
+                    <li><a href="assets/models/heavy-models/">📁 Modèles très lourds <span class="file-size">-</span></a></li>
+                    <li><a href="assets/models/light-models/">📁 Modèles légers <span class="file-size">-</span></a></li>
+                </ul>
+            </div>
+
+            <div class="asset-category">
+                <h3>🖼️ Textures</h3>
+                <ul class="asset-list">
+                    <li><a href="assets/textures/">📁 Textures HD <span class="file-size">-</span></a></li>
+                    <li><a href="assets/textures/hd/">📁 Textures haute résolution <span class="file-size">-</span></a></li>
+                    <li><a href="assets/textures/compressed/">📁 Textures compressées <span class="file-size">-</span></a></li>
+                </ul>
+            </div>
+
+            <div class="asset-category">
+                <h3>🌌 Environnements</h3>
+                <ul class="asset-list">
+                    <li><a href="assets/hdri/">📁 Environnements HDRI <span class="file-size">-</span></a></li>
+                </ul>
+            </div>
+
+            <div class="asset-category">
+                <h3>🎵 Audio</h3>
+                <ul class="asset-list">
+                    <li><a href="assets/audio/">📁 Fichiers audio <span class="file-size">-</span></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="api-info">
+            <h3>🔗 API d'accès</h3>
+            <p>Base URL pour le chargement à distance :</p>
+            <div class="code-block">
+                https://albrice-montfort.github.io/fiv2-remote/
+            </div>
+
+            <h3>📝 Exemples d'URLs disponibles</h3>
+            <div class="code-block">
+                <!-- Modèles 3D -->
+                https://albrice-montfort.github.io/fiv2-remote/assets/models/heavy-models/Fiv2_06M.glb
+
+                <!-- Textures HD -->
+                https://albrice-montfort.github.io/fiv2-remote/assets/textures/hd/FIv2_UI01_2k.PNG
+                https://albrice-montfort.github.io/fiv2-remote/assets/textures/hd/FIv2_UI01A_2k.png
+                https://albrice-montfort.github.io/fiv2-remote/assets/textures/hd/FIv2_UI02_2k.png
+                https://albrice-montfort.github.io/fiv2-remote/assets/textures/hd/FIv2_UI03_2k.png
+                https://albrice-montfort.github.io/fiv2-remote/assets/textures/hd/FIv2_UI04_2k.png
+                https://albrice-montfort.github.io/fiv2-remote/assets/textures/hd/FIv2_UI05_2k.PNG
+                https://albrice-montfort.github.io/fiv2-remote/assets/textures/hd/FIv2_UI06_2k.png
+                https://albrice-montfort.github.io/fiv2-remote/assets/textures/hd/FIv2_UI07_2k.PNG
+            </div>
+
+            <h3>🛠️ Utilisation avec Needle Engine</h3>
+            <div class="code-block">
+// Dans Unity avec NestedGltf :
+filePath = "https://albrice-montfort.github.io/fiv2-remote/assets/models/heavy-models/Fiv2_06M.glb"
+
+// Dans TypeScript :
+const assetUrl = "https://albrice-montfort.github.io/fiv2-remote/assets/textures/hd/FIv2_UI01_2k.PNG"
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Script pour afficher les tailles de fichiers dynamiquement
+        async function loadAssetInfo() {
+            const categories = document.querySelectorAll('.asset-category');
+
+            for (const category of categories) {
+                const links = category.querySelectorAll('a[href$="/"]');
+
+                for (const link of links) {
+                    try {
+                        const response = await fetch(link.href);
+                        if (response.ok) {
+                            const sizeSpan = link.querySelector('.file-size');
+                            if (sizeSpan) {
+                                sizeSpan.textContent = '✓';
+                                sizeSpan.style.color = '#66A22F';
+                            }
+                        }
+                    } catch (error) {
+                        console.log('Dossier non encore créé:', link.href);
+                    }
+                }
+            }
+        }
+
+        // Charger les infos des assets
+        loadAssetInfo();
+    </script>
+</body>
+</html>
