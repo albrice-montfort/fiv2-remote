@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test URLs - Fractal Innov</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .category {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .category h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+        .test-item {
+            margin: 8px 0;
+            padding: 8px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+        }
+        .status {
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .loading { background: #fff3cd; color: #856404; }
+        h1 { color: #333; text-align: center; }
+        .url-display {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.8em;
+            margin: 5px 0;
+            word-break: break-all;
+        }
+        .download-btn {
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+        .download-btn:hover {
+            background: #0056b3;
+        }
+        .summary {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test de Toutes les URLs</h1>
+        <p>Vérification que toutes les URLs sont correctes et fonctionnelles</p>
+        
+        <div id="loading" style="text-align: center; padding: 20px;">
+            <h3>🔄 Chargement des tests...</h3>
+            <p>Vérification de toutes les URLs...</p>
+        </div>
+
+        <div id="content" style="display: none;">
+            <div id="hdri-tests" class="category">
+                <h3>🌌 Environnements HDRI</h3>
+                <div id="hdri-list"></div>
+            </div>
+
+            <div id="textures-tests" class="category">
+                <h3>🖼️ Textures</h3>
+                <div id="textures-list"></div>
+            </div>
+
+            <div id="models-tests" class="category">
+                <h3>🎨 Modèles 3D</h3>
+                <div id="models-list"></div>
+            </div>
+
+            <div id="audio-tests" class="category">
+                <h3>🎵 Audio</h3>
+                <div id="audio-list"></div>
+            </div>
+        </div>
+
+        <div id="summary" class="summary" style="display: none;">
+            <h2>📊 Résumé des Tests</h2>
+            <div id="summary-content"></div>
+        </div>
+    </div>
+
+    <script>
+        const baseUrl = 'https://albrice-montfort.github.io/fiv2-remote/';
+        
+        // Assets à tester avec leurs URLs correctes
+        const assets = {
+            hdri: [
+                {
+                    name: 'HDRI_Nebula02_4k.png',
+                    url: 'assets/hdri/HDRI_Nebula02_4k.png',
+                    size: '6.41 MB'
+                },
+                {
+                    name: 'HDRI_Nebula02_8k.png',
+                    url: 'assets/hdri/HDRI_Nebula02_8k.png',
+                    size: '36.35 MB'
+                }
+            ],
+            textures: [
+                {
+                    name: 'FIv2_UI01A_2k.png',
+                    url: 'assets/textures/hd/FIv2_UI01A_2k.png',
+                    size: '~1MB'
+                },
+                {
+                    name: 'FIv2_UI02_2k.png',
+                    url: 'assets/textures/hd/FIv2_UI02_2k.png',
+                    size: '~1MB'
+                },
+                {
+                    name: 'FIv2_UI03_2k.png',
+                    url: 'assets/textures/hd/FIv2_UI03_2k.png',
+                    size: '~1MB'
+                },
+                {
+                    name: 'FIv2_UI04_2k.png',
+                    url: 'assets/textures/hd/FIv2_UI04_2k.png',
+                    size: '~1MB'
+                },
+                {
+                    name: 'FIv2_UI06_2k.png',
+                    url: 'assets/textures/hd/FIv2_UI06_2k.png',
+                    size: '~1MB'
+                }
+            ],
+            models: [
+                {
+                    name: 'Fiv2_06M.glb',
+                    url: 'assets/models/heavy-models/Fiv2_06M.glb',
+                    size: '~6MB'
+                }
+            ],
+            audio: []
+        };
+
+        let results = {
+            success: 0,
+            error: 0,
+            total: 0
+        };
+
+        async function testAsset(asset, category) {
+            const fullUrl = baseUrl + asset.url;
+            const container = document.getElementById(category + '-list');
+            
+            const testItem = document.createElement('div');
+            testItem.className = 'test-item';
+            
+            testItem.innerHTML = `
+                <div>
+                    <strong>${asset.name}</strong> (${asset.size})<br>
+                    <div class="url-display">${fullUrl}</div>
+                </div>
+                <span class="status loading">⏳ Test...</span>
+            `;
+            container.appendChild(testItem);
+            
+            try {
+                const response = await fetch(fullUrl, { method: 'HEAD' });
+                results.total++;
+                
+                if (response.ok) {
+                    const size = response.headers.get('content-length');
+                    const actualSize = size ? `(${(size / 1024 / 1024).toFixed(2)} MB)` : '';
+                    testItem.innerHTML = `
+                        <div>
+                            <strong>${asset.name}</strong> (${asset.size})<br>
+                            <div class="url-display">${fullUrl}</div>
+                        </div>
+                        <div>
+                            <span class="status success">✅ OK ${actualSize}</span>
+                            <a href="${fullUrl}" class="download-btn" download>📥 Test</a>
+                        </div>
+                    `;
+                    results.success++;
+                } else {
+                    testItem.innerHTML = `
+                        <div>
+                            <strong>${asset.name}</strong> (${asset.size})<br>
+                            <div class="url-display">${fullUrl}</div>
+                        </div>
+                        <span class="status error">❌ Erreur ${response.status}</span>
+                    `;
+                    results.error++;
+                }
+            } catch (error) {
+                results.total++;
+                testItem.innerHTML = `
+                    <div>
+                        <strong>${asset.name}</strong> (${asset.size})<br>
+                        <div class="url-display">${fullUrl}</div>
+                    </div>
+                    <span class="status error">❌ Erreur réseau</span>
+                `;
+                results.error++;
+            }
+        }
+
+        async function runAllTests() {
+            // Tester tous les assets
+            for (const [category, files] of Object.entries(assets)) {
+                if (files.length > 0) {
+                    for (const file of files) {
+                        await testAsset(file, category);
+                    }
+                } else {
+                    const container = document.getElementById(category + '-list');
+                    container.innerHTML = '<div class="test-item"><div>Aucun fichier dans ce dossier</div><span class="status success">✅ OK</span></div>';
+                }
+            }
+            
+            // Afficher le contenu
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            document.getElementById('summary').style.display = 'block';
+            
+            // Afficher le résumé
+            const summaryContent = document.getElementById('summary-content');
+            summaryContent.innerHTML = `
+                <div class="test-item">
+                    <span><strong>Total testé:</strong> ${results.total}</span>
+                    <span class="status success">✅ Réussis: ${results.success}</span>
+                </div>
+                <div class="test-item">
+                    <span><strong>Échecs:</strong> ${results.error}</span>
+                    <span class="status ${results.error > 0 ? 'error' : 'success'}">${results.error > 0 ? '❌' : '✅'} ${results.error}</span>
+                </div>
+                <div class="test-item">
+                    <span><strong>Taux de réussite:</strong> ${((results.success / results.total) * 100).toFixed(1)}%</span>
+                    <span class="status ${results.success === results.total ? 'success' : 'error'}">${results.success === results.total ? '🎉' : '⚠️'}</span>
+                </div>
+                <div class="test-item">
+                    <span><strong>Base URL:</strong> ${baseUrl}</span>
+                    <span class="status success">🔗 Disponible</span>
+                </div>
+            `;
+        }
+
+        // Lancer les tests
+        runAllTests();
+    </script>
+</body>
+</html>
