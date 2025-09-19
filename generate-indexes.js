@@ -69,7 +69,7 @@ function scanDirectory(dirPath, extensions) {
 // Fonction pour générer le HTML d'un item
 function generateItemHTML(item, category, basePath) {
     const relativePath = path.relative(basePath, item.path).replace(/\\/g, '/');
-    const url = baseUrl + relativePath;
+    const url = baseUrl + 'assets/' + relativePath;
 
     const icons = {
         models: '🎨',
