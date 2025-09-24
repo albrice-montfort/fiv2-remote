@@ -43,13 +43,13 @@ else
 - Workflow GitHub Actions simplifié
 
 Déployé automatiquement le $(date)"
-    
+
     echo "✅ Commit créé avec succès"
-    
+
     # Push vers GitHub
     echo "🌐 Déploiement sur GitHub Pages..."
     git push origin main
-    
+
     if [ $? -eq 0 ]; then
         echo "✅ Déploiement réussi !"
         echo ""
