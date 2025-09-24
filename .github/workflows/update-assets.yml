@@ -1,0 +1,72 @@
+name: Update Asset Indexes
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'assets/**'
+      - 'generate-indexes.js'
+  workflow_dispatch:
+
+jobs:
+  update-indexes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Generate index pages
+        run: |
+          echo "🔄 Génération automatique des index.html..."
+          node generate-indexes.js
+          echo "✅ Index générés avec succès"
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ Aucun changement détecté dans les index"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "📝 Changements détectés dans les index"
+          fi
+
+      - name: Commit and push changes
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add assets/*/index.html
+          git commit -m "🔄 Auto-update asset indexes
+
+- Mise à jour automatique des index.html
+- Ajout de nouveaux assets détectés
+- Génération des listes de fichiers
+
+Déployé automatiquement le $(date)"
+          git push
+
+      - name: Summary
+        run: |
+          echo "## 📊 Résumé de la mise à jour" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.changes.outputs.changed }}" == "true" ]; then
+            echo "✅ **Index mis à jour avec succès**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "🔗 **Votre site est disponible à :**" >> $GITHUB_STEP_SUMMARY
+            echo "- https://albrice-montfort.github.io/fiv2-remote/" >> $GITHUB_STEP_SUMMARY
+            echo "- https://albrice-montfort.github.io/fiv2-remote/assets/hdri/" >> $GITHUB_STEP_SUMMARY
+            echo "- https://albrice-montfort.github.io/fiv2-remote/assets/models/" >> $GITHUB_STEP_SUMMARY
+            echo "- https://albrice-montfort.github.io/fiv2-remote/assets/textures/" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "ℹ️ **Aucun changement nécessaire**" >> $GITHUB_STEP_SUMMARY
+            echo "Les index sont déjà à jour." >> $GITHUB_STEP_SUMMARY
+          fi
