@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Simple Deploy to GitHub Pages
 
 on:
   push:
@@ -25,7 +25,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
 
       - name: Generate index pages
         run: |
@@ -33,34 +32,10 @@ jobs:
           node generate-indexes.js
           echo "✅ Index générés avec succès"
 
-      - name: Check for changes
-        id: changes
-        run: |
-          if git diff --quiet; then
-            echo "changed=false" >> $GITHUB_OUTPUT
-            echo "ℹ️ Aucun changement détecté"
-          else
-            echo "changed=true" >> $GITHUB_OUTPUT
-            echo "📝 Changements détectés, commit automatique..."
-            git config --local user.email "action@github.com"
-            git config --local user.name "GitHub Action"
-            git add assets/*/index.html
-            git commit -m "🔄 Auto-update index pages
-
-- Mise à jour automatique des index.html
-- Ajout de nouveaux assets détectés
-- Génération des listes de fichiers
-
-Déployé automatiquement le $(date)"
-            git push
-          fi
-
       - name: Setup Pages
-        if: steps.changes.outputs.changed == 'true'
         uses: actions/configure-pages@v4
 
       - name: Upload artifact
-        if: steps.changes.outputs.changed == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
