@@ -53,3 +53,5 @@ echo ""
 echo "🔗 URLs à tester :"
 echo "https://albrice-montfort.github.io/fiv2-remote/assets/hdri/HDRI_Nebula02_4k.png"
 echo "https://albrice-montfort.github.io/fiv2-remote/assets/hdri/HDRI_Nebula02_8k.png"
+
+

@@ -83,3 +83,5 @@ echo ""
 echo "✅ PRÊT POUR LE DÉPLOIEMENT !"
 echo "💡 Toutes les URLs sont correctes et fonctionnelles"
 echo "🚀 Utilisez GitHub Desktop pour pousser les changements"
+
+

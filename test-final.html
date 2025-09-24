@@ -73,7 +73,7 @@
     <div class="container">
         <h1>🧪 Test Final - Fichiers HDRI</h1>
         <p>Vérification que les fichiers HDRI ont la bonne taille après correction</p>
-        
+
         <div id="loading" style="text-align: center; padding: 20px;">
             <h3>🔄 Test en cours...</h3>
             <p>Vérification des tailles de fichiers...</p>
@@ -86,7 +86,7 @@
 
     <script>
         const baseUrl = 'https://albrice-montfort.github.io/fiv2-remote/';
-        
+
         const files = [
             {
                 name: 'HDRI_Nebula02_4k.png',
@@ -104,17 +104,17 @@
 
         async function testFileSize(file) {
             const fullUrl = baseUrl + file.url;
-            
+
             try {
                 const response = await fetch(fullUrl, { method: 'HEAD' });
-                
+
                 if (response.ok) {
                     const actualSize = parseInt(response.headers.get('content-length') || '0');
                     const expectedSize = file.expectedSize;
-                    
+
                     // Tolérance de 5% pour les tailles
                     const sizeMatch = Math.abs(actualSize - expectedSize) < (expectedSize * 0.05);
-                    
+
                     return {
                         success: true,
                         name: file.name,
@@ -156,30 +156,30 @@
 
         async function runTests() {
             const results = [];
-            
+
             for (const file of files) {
                 const result = await testFileSize(file);
                 results.push(result);
             }
-            
+
             displayResults(results);
         }
 
         function displayResults(results) {
             const container = document.getElementById('test-results');
             const loading = document.getElementById('loading');
-            
+
             loading.style.display = 'none';
             document.getElementById('content').style.display = 'block';
-            
+
             let html = '';
             let allSuccess = true;
-            
+
             for (const result of results) {
                 if (!result.success || !result.sizeMatch) {
                     allSuccess = false;
                 }
-                
+
                 html += `
                     <div class="test-item">
                         <h3>${result.name}</h3>
@@ -202,7 +202,7 @@
                     </div>
                 `;
             }
-            
+
             // Résumé global
             html += `
                 <div class="test-item" style="background: ${allSuccess ? '#d4edda' : '#f8d7da'}; border-color: ${allSuccess ? '#c3e6cb' : '#f5c6cb'};">
@@ -211,14 +211,14 @@
                         ${allSuccess ? '🎉 Tous les fichiers ont la bonne taille !' : '⚠️ Certains fichiers ont encore des problèmes'}
                     </div>
                     <p>
-                        ${allSuccess ? 
-                            'Les fichiers HDRI sont maintenant correctement déployés sur GitHub Pages.' : 
+                        ${allSuccess ?
+                            'Les fichiers HDRI sont maintenant correctement déployés sur GitHub Pages.' :
                             'Vérifiez que vous avez bien poussé les changements avec GitHub Desktop.'
                         }
                     </p>
                 </div>
             `;
-            
+
             container.innerHTML = html;
         }
 
@@ -227,3 +227,5 @@
     </script>
 </body>
 </html>
+
+
