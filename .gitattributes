@@ -1,7 +1,6 @@
 # Configuration pour GitHub Pages
 # Assurer que les fichiers binaires sont traités correctement
 # Fichiers GLB/GLTF
-*.glb filter=lfs diff=lfs merge=lfs -text
 *.gltf filter=lfs diff=lfs merge=lfs -text
 # Images
 *.jpg filter=lfs diff=lfs merge=lfs -text
