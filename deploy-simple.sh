@@ -83,7 +83,7 @@ echo "📊 Assets détectés :"
 echo "==================="
 
 # Afficher les assets détectés
-for category in models textures hdri audio; do
+for category in models textures hdri audio chunks; do
     if [ -d "assets/$category" ]; then
         count=$(find "assets/$category" -type f \( -name "*.glb" -o -name "*.gltf" -o -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.webp" -o -name "*.ktx2" -o -name "*.hdr" -o -name "*.exr" -o -name "*.mp3" -o -name "*.wav" -o -name "*.ogg" -o -name "*.m4a" \) | wc -l)
         if [ $count -gt 0 ]; then

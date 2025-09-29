@@ -14,7 +14,8 @@ const supportedExtensions = {
     models: ['.glb', '.gltf'],
     textures: ['.png', '.jpg', '.jpeg', '.webp', '.ktx2'],
     hdri: ['.hdr', '.exr', '.ktx2', '.png', '.jpg', '.jpeg'],
-    audio: ['.mp3', '.wav', '.ogg', '.m4a']
+    audio: ['.mp3', '.wav', '.ogg', '.m4a'],
+    chunks: ['.glb', '.gltf']
 };
 
 // Fonction pour obtenir la taille d'un fichier
@@ -75,7 +76,8 @@ function generateItemHTML(item, category, basePath) {
         models: '🎨',
         textures: '🖼️',
         hdri: '🌌',
-        audio: '🎵'
+        audio: '🎵',
+        chunks: '🧩'
     };
 
     const icon = icons[category] || '📄';
@@ -98,21 +100,24 @@ function generateIndexPage(category, files, basePath) {
         models: 'Modèles 3D',
         textures: 'Textures',
         hdri: 'Environnements HDRI',
-        audio: 'Fichiers Audio'
+        audio: 'Fichiers Audio',
+        chunks: 'Chunks 3D'
     };
 
     const descriptions = {
         models: 'Modèles 3D optimisés pour le web',
         textures: 'Textures et images haute qualité',
         hdri: 'Environnements HDRI et skyboxes',
-        audio: 'Fichiers audio et sons'
+        audio: 'Fichiers audio et sons',
+        chunks: 'Fragments et éléments 3D modulaires'
     };
 
     const icons = {
         models: '🎨',
         textures: '🖼️',
         hdri: '🌌',
-        audio: '🎵'
+        audio: '🎵',
+        chunks: '🧩'
     };
 
     const title = titles[category];
