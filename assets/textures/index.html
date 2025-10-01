@@ -119,10 +119,51 @@
             color: #0BA398;
             margin-top: 0;
         }
+        .refresh-btn {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: linear-gradient(45deg, #66A22F, #0BA398);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+        .refresh-btn.loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        .refresh-status {
+            position: fixed;
+            top: 140px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 12px;
+            display: none;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
     <a href="../../index.html" class="back-link">← Retour à l'accueil</a>
+    <button class="refresh-btn" onclick="refreshFiles()">🔄 Refresh Files</button>
+    <div class="refresh-status" id="refreshStatus"></div>
 
     <div class="container">
         <div class="header">
@@ -145,5 +186,133 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Configuration pour le refresh des fichiers
+        const currentCategory = 'textures';
+        const baseUrl = 'https://albrice-montfort.github.io/fiv2-remote/';
+        const supportedExtensions = [".png",".jpg",".jpeg",".webp",".ktx2"];
+
+        // Fonction pour afficher le statut
+        function showStatus(message, isError = false) {
+            const status = document.getElementById('refreshStatus');
+            status.textContent = message;
+            status.style.display = 'block';
+            status.style.backgroundColor = isError ? 'rgba(255, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.8)';
+            
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 3000);
+        }
+
+        // Fonction pour générer le HTML d'un item
+        function generateItemHTML(item) {
+            const icons = {
+                models: '🎨',
+                textures: '🖼️',
+                hdri: '🌌',
+                audio: '🎵',
+                chunks: '🧩'
+            };
+            
+            const icon = icons[currentCategory] || '📄';
+            const url = baseUrl + 'assets/' + currentCategory + '/' + item.name;
+            
+            return `
+                <div class="asset-item">
+                    <div class="asset-preview">${icon}</div>
+                    <div class="asset-info">
+                        <div class="asset-name">${item.name}</div>
+                        <div class="asset-details">${item.extension.toUpperCase()} - ${item.size}</div>
+                    </div>
+                    <a href="${url}" class="download-btn" download>📥 Télécharger</a>
+                </div>
+            `;
+        }
+
+        // Fonction pour formater la taille des fichiers
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Fonction principale pour rafraîchir les fichiers
+        async function refreshFiles() {
+            const btn = document.querySelector('.refresh-btn');
+            const container = document.querySelector('.assets-grid') || document.querySelector('.empty-state')?.parentNode;
+            
+            if (!container) {
+                showStatus('❌ Impossible de trouver le conteneur', true);
+                return;
+            }
+
+            btn.classList.add('loading');
+            btn.textContent = '🔄 Scanning...';
+            showStatus('🔍 Recherche de nouveaux fichiers...');
+
+            try {
+                // Utiliser l'API GitHub pour lister les fichiers du dossier
+                const apiUrl = `https://api.github.com/repos/albrice-montfort/fiv2-remote/contents/assets/${currentCategory}`;
+                const response = await fetch(apiUrl);
+                
+                if (!response.ok) {
+                    throw new Error('Impossible d\'accéder aux fichiers GitHub');
+                }
+
+                const files = await response.json();
+                const validFiles = [];
+
+                for (const file of files) {
+                    if (file.type === 'file') {
+                        const extension = '.' + file.name.split('.').pop().toLowerCase();
+                        if (supportedExtensions.includes(extension)) {
+                            // Obtenir la taille du fichier
+                            const fileResponse = await fetch(file.download_url, { method: 'HEAD' });
+                            const size = fileResponse.headers.get('content-length') || file.size;
+                            
+                            validFiles.push({
+                                name: file.name,
+                                size: formatFileSize(parseInt(size)),
+                                extension: extension,
+                                url: file.download_url
+                            });
+                        }
+                    }
+                }
+
+                // Mettre à jour l'affichage
+                if (validFiles.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>📁 Aucun fichier trouvé</h3>
+                            <p>Ajoutez des fichiers dans ce dossier et relancez le refresh</p>
+                            <p>Ils apparaîtront automatiquement ici !</p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div class="assets-grid">
+                            ${validFiles.map(file => generateItemHTML(file)).join('')}
+                        </div>
+                    `;
+                }
+
+                showStatus(`✅ ${validFiles.length} fichier(s) détecté(s)`);
+
+            } catch (error) {
+                console.error('Erreur lors du refresh:', error);
+                showStatus('❌ Erreur: ' + error.message, true);
+            } finally {
+                btn.classList.remove('loading');
+                btn.textContent = '🔄 Refresh Files';
+            }
+        }
+
+        // Auto-refresh au chargement de la page (optionnel)
+        // refreshFiles();
+    </script>
 </body>
 </html>
