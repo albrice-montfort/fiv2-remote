@@ -1,18 +1,20 @@
 #!/bin/bash
 
-# Script pour vérifier les fichiers volumineux et leur statut LFS
+# Script pour vérifier les fichiers volumineux et leur accessibilité directe
 # Fractal Innov Assets Repository
 
 echo "🔍 Vérification des fichiers volumineux..."
 echo "========================================="
 
-# Vérifier la configuration Git LFS
-echo "📋 Configuration Git LFS :"
-git lfs env | head -10
-
-echo ""
-echo "📁 Fichiers suivis par LFS :"
-git lfs ls-files
+# Vérifier si LFS est utilisé (devrait être vide maintenant)
+echo "📋 Statut Git LFS :"
+lfs_files=$(git lfs ls-files)
+if [ -z "$lfs_files" ]; then
+    echo "✅ Aucun fichier LFS - Accès direct activé !"
+else
+    echo "⚠️  Fichiers LFS détectés :"
+    echo "$lfs_files"
+fi
 
 echo ""
 echo "📊 Taille des fichiers GLB locaux :"
@@ -53,6 +55,7 @@ echo "4. Attendez 2-3 minutes pour la mise à jour des pages"
 
 echo ""
 echo "🔧 Si le problème persiste :"
-echo "  - Les fichiers LFS peuvent prendre plus de temps à se synchroniser"
-echo "  - Vérifiez les quotas LFS de votre repository GitHub"
+echo "  - Vérifiez que tous les fichiers sont bien < 100MB"
+echo "  - Assurez-vous que le push s'est bien déroulé"
 echo "  - Consultez l'onglet 'Actions' de votre repository pour voir les logs"
+echo "  - Les fichiers sont maintenant en accès direct (plus de LFS)"
