@@ -29,11 +29,36 @@ jobs:
       - name: Generate index pages
         run: |
           echo "🔄 Génération automatique des index.html..."
+          echo "📁 Structure des assets avant génération :"
+          find assets -type d -name "*" | head -20
+          echo ""
+          echo "📊 Fichiers GLB détectés :"
+          find assets -name "*.glb" -exec ls -lh {} \;
+          echo ""
+          echo "🚀 Exécution du générateur d'index..."
           node generate-indexes.js
+          echo ""
+          echo "📋 Index.html générés :"
+          find assets -name "index.html" -exec echo "✅ {}" \;
+          echo ""
+          echo "🔍 Contenu du dossier chunks :"
+          ls -la assets/chunks/ || echo "❌ Dossier chunks non trouvé"
           echo "✅ Index générés avec succès"
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
+
+      - name: Verify files before upload
+        run: |
+          echo "🔍 Vérification finale avant déploiement :"
+          echo "📄 Index.html présents :"
+          find . -name "index.html" -not -path "./.git/*" | sort
+          echo ""
+          echo "🧩 Fichiers chunks :"
+          ls -la assets/chunks/ || echo "❌ Pas de dossier chunks"
+          echo ""
+          echo "📊 Taille totale des assets :"
+          du -sh assets/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
