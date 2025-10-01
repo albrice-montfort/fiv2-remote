@@ -199,7 +199,7 @@
             status.textContent = message;
             status.style.display = 'block';
             status.style.backgroundColor = isError ? 'rgba(255, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.8)';
-            
+
             setTimeout(() => {
                 status.style.display = 'none';
             }, 3000);
@@ -214,10 +214,10 @@
                 audio: '🎵',
                 chunks: '🧩'
             };
-            
+
             const icon = icons[currentCategory] || '📄';
             const url = baseUrl + 'assets/' + currentCategory + '/' + item.name;
-            
+
             return `
                 <div class="asset-item">
                     <div class="asset-preview">${icon}</div>
@@ -239,6 +239,71 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
+        // Fonction pour scanner récursivement les dossiers
+        async function scanDirectory(apiUrl, path = '') {
+            const validFiles = [];
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    headers: {
+                        'User-Agent': 'Fractal-Innov-Assets-Browser/1.0'
+                    }
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        console.log(`Dossier vide ou inexistant: ${apiUrl}`);
+                        return validFiles;
+                    }
+                    throw new Error(`Erreur HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const items = await response.json();
+                
+                for (const item of items) {
+                    if (item.type === 'file' && item.name !== '.DS_Store' && item.name !== '.gitkeep') {
+                        const extension = '.' + item.name.split('.').pop().toLowerCase();
+                        if (supportedExtensions.includes(extension)) {
+                            try {
+                                // Obtenir la taille du fichier
+                                const fileResponse = await fetch(item.download_url, { 
+                                    method: 'HEAD',
+                                    headers: {
+                                        'User-Agent': 'Fractal-Innov-Assets-Browser/1.0'
+                                    }
+                                });
+                                const size = fileResponse.headers.get('content-length') || item.size;
+                                
+                                validFiles.push({
+                                    name: path ? `${path}/${item.name}` : item.name,
+                                    size: formatFileSize(parseInt(size)),
+                                    extension: extension,
+                                    url: item.download_url
+                                });
+                            } catch (fileError) {
+                                console.warn(`Erreur lors de la récupération de ${item.name}:`, fileError);
+                                // Ajouter le fichier même si on ne peut pas récupérer sa taille
+                                validFiles.push({
+                                    name: path ? `${path}/${item.name}` : item.name,
+                                    size: formatFileSize(item.size || 0),
+                                    extension: extension,
+                                    url: item.download_url
+                                });
+                            }
+                        }
+                    } else if (item.type === 'dir' && item.name !== '.git') {
+                        // Scanner récursivement les sous-dossiers
+                        const subFiles = await scanDirectory(item.url, path ? `${path}/${item.name}` : item.name);
+                        validFiles.push(...subFiles);
+                    }
+                }
+            } catch (error) {
+                console.warn(`Erreur lors du scan de ${apiUrl}:`, error);
+            }
+            
+            return validFiles;
+        }
+
         // Fonction principale pour rafraîchir les fichiers
         async function refreshFiles() {
             const btn = document.querySelector('.refresh-btn');
@@ -256,55 +321,41 @@
             try {
                 // Utiliser l'API GitHub pour lister les fichiers du dossier
                 const apiUrl = `https://api.github.com/repos/albrice-montfort/fiv2-remote/contents/assets/${currentCategory}`;
-                const response = await fetch(apiUrl);
-                
-                if (!response.ok) {
-                    throw new Error('Impossible d\'accéder aux fichiers GitHub');
-                }
-
-                const files = await response.json();
-                const validFiles = [];
-
-                for (const file of files) {
-                    if (file.type === 'file') {
-                        const extension = '.' + file.name.split('.').pop().toLowerCase();
-                        if (supportedExtensions.includes(extension)) {
-                            // Obtenir la taille du fichier
-                            const fileResponse = await fetch(file.download_url, { method: 'HEAD' });
-                            const size = fileResponse.headers.get('content-length') || file.size;
-                            
-                            validFiles.push({
-                                name: file.name,
-                                size: formatFileSize(parseInt(size)),
-                                extension: extension,
-                                url: file.download_url
-                            });
-                        }
-                    }
-                }
+                const validFiles = await scanDirectory(apiUrl);
 
                 // Mettre à jour l'affichage
                 if (validFiles.length === 0) {
                     container.innerHTML = `
                         <div class="empty-state">
                             <h3>📁 Aucun fichier trouvé</h3>
-                            <p>Ajoutez des fichiers dans ce dossier et relancez le refresh</p>
-                            <p>Ils apparaîtront automatiquement ici !</p>
+                            <p>Ce dossier ne contient pas de fichiers compatibles</p>
+                            <p>Types supportés: ${supportedExtensions.join(', ')}</p>
                         </div>
                     `;
+                    showStatus('ℹ️ Aucun fichier compatible trouvé');
                 } else {
                     container.innerHTML = `
                         <div class="assets-grid">
                             ${validFiles.map(file => generateItemHTML(file)).join('')}
                         </div>
                     `;
+                    showStatus(`✅ ${validFiles.length} fichier(s) détecté(s)`);
                 }
-
-                showStatus(`✅ ${validFiles.length} fichier(s) détecté(s)`);
 
             } catch (error) {
                 console.error('Erreur lors du refresh:', error);
-                showStatus('❌ Erreur: ' + error.message, true);
+                let errorMessage = error.message;
+                
+                // Messages d'erreur plus explicites
+                if (error.message.includes('404')) {
+                    errorMessage = 'Dossier non trouvé ou vide';
+                } else if (error.message.includes('403')) {
+                    errorMessage = 'Accès refusé à l\'API GitHub';
+                } else if (error.message.includes('Failed to fetch')) {
+                    errorMessage = 'Problème de connexion réseau';
+                }
+                
+                showStatus(`❌ ${errorMessage}`, true);
             } finally {
                 btn.classList.remove('loading');
                 btn.textContent = '🔄 Refresh Files';
