@@ -445,8 +445,31 @@ function generateIndexPage(category, files, basePath) {
         // Fonction principale pour rafraîchir les fichiers
         async function refreshFiles() {
             const btn = document.querySelector('.refresh-btn');
-            const container = document.querySelector('.assets-grid') || document.querySelector('.empty-state')?.parentNode;
-
+            
+            // Chercher le conteneur principal (celui qui contient soit .assets-grid soit .empty-state)
+            let container = document.querySelector('.assets-grid');
+            if (!container) {
+                const emptyState = document.querySelector('.empty-state');
+                if (emptyState) {
+                    container = emptyState.parentNode;
+                } else {
+                    // Créer un conteneur si aucun n'existe
+                    const mainContainer = document.querySelector('.container');
+                    if (mainContainer) {
+                        const header = mainContainer.querySelector('.header');
+                        container = document.createElement('div');
+                        container.className = 'content-area';
+                        if (header && header.nextSibling) {
+                            mainContainer.insertBefore(container, header.nextSibling);
+                        } else {
+                            mainContainer.appendChild(container);
+                        }
+                    }
+                }
+            } else {
+                container = container.parentNode; // Prendre le parent de .assets-grid
+            }
+            
             if (!container) {
                 showStatus('❌ Impossible de trouver le conteneur', true);
                 return;
@@ -459,7 +482,12 @@ function generateIndexPage(category, files, basePath) {
             try {
                 // Utiliser l'API GitHub pour lister les fichiers du dossier
                 const apiUrl = \`https://api.github.com/repos/albrice-montfort/fiv2-remote/contents/assets/\${currentCategory}\`;
+                console.log(\`🔍 Scanning: \${apiUrl}\`);
+                console.log(\`📁 Category: \${currentCategory}\`);
+                console.log(\`🎯 Supported extensions: \`, supportedExtensions);
+                
                 const validFiles = await scanDirectory(apiUrl);
+                console.log(\`📊 Files found: \`, validFiles);
 
                 // Mettre à jour l'affichage
                 if (validFiles.length === 0) {

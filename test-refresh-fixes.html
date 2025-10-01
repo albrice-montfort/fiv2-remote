@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test des corrections du bouton Refresh</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-info {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-link {
+            display: inline-block;
+            background: linear-gradient(45deg, #66A22F, #0BA398);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .test-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .fix-item {
+            background: #e8f5e8;
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 4px solid #66A22F;
+            border-radius: 3px;
+        }
+        .bug-item {
+            background: #ffe8e8;
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 4px solid #ff4444;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-info">
+        <h1>🔧 Test des Corrections du Bouton Refresh</h1>
+        
+        <h3>🐛 Problèmes identifiés et corrigés :</h3>
+        
+        <div class="bug-item">
+            <strong>Problème 1 :</strong> Assets disparaissent au premier clic sur Textures
+            <br><strong>Cause :</strong> Mauvaise sélection du conteneur DOM
+        </div>
+        
+        <div class="bug-item">
+            <strong>Problème 2 :</strong> Erreur 404 au deuxième clic
+            <br><strong>Cause :</strong> Conteneur détruit, plus de référence valide
+        </div>
+        
+        <div class="bug-item">
+            <strong>Problème 3 :</strong> Dossier textures vide alors qu'il contient des sous-dossiers
+            <br><strong>Cause :</strong> Pas de scan récursif des sous-dossiers
+        </div>
+
+        <h3>✅ Corrections apportées :</h3>
+        
+        <div class="fix-item">
+            <strong>Fix 1 :</strong> Amélioration de la logique de sélection du conteneur
+            <br>→ Recherche intelligente du conteneur parent
+            <br>→ Création automatique si nécessaire
+        </div>
+        
+        <div class="fix-item">
+            <strong>Fix 2 :</strong> Gestion robuste des conteneurs DOM
+            <br>→ Préservation de la structure après refresh
+            <br>→ Fallback gracieux si conteneur introuvable
+        </div>
+        
+        <div class="fix-item">
+            <strong>Fix 3 :</strong> Scan récursif des sous-dossiers
+            <br>→ Détection automatique des fichiers dans hd/, compressed/, etc.
+            <br>→ Affichage du chemin complet (ex: "hd/texture.png")
+        </div>
+        
+        <div class="fix-item">
+            <strong>Fix 4 :</strong> Debug amélioré
+            <br>→ Logs détaillés dans la console du navigateur
+            <br>→ Messages d'erreur plus explicites
+        </div>
+        
+        <div class="fix-item">
+            <strong>Fix 5 :</strong> Bouton refresh sur la page racine
+            <br>→ Détection automatique de nouveaux dossiers
+            <br>→ Mise à jour de la structure principale
+        </div>
+
+        <h3>🧪 Pages de test :</h3>
+        <a href="index.html" class="test-link" target="_blank">🏠 Page Racine (nouveau bouton)</a>
+        <a href="assets/textures/index.html" class="test-link" target="_blank">🖼️ Textures (problème corrigé)</a>
+        <a href="assets/chunks/index.html" class="test-link" target="_blank">🧩 Chunks (référence)</a>
+        <a href="assets/models/index.html" class="test-link" target="_blank">🎨 Models (sous-dossiers)</a>
+
+        <h3>📋 Instructions de test :</h3>
+        <ol>
+            <li><strong>Test Textures :</strong>
+                <ul>
+                    <li>Ouvrir la page Textures</li>
+                    <li>Cliquer sur "🔄 Refresh Files"</li>
+                    <li>Vérifier que les fichiers du dossier hd/ apparaissent</li>
+                    <li>Cliquer à nouveau → pas d'erreur 404</li>
+                </ul>
+            </li>
+            <li><strong>Test Page Racine :</strong>
+                <ul>
+                    <li>Ouvrir la page d'accueil</li>
+                    <li>Cliquer sur "🔄 Refresh Directories"</li>
+                    <li>Vérifier que tous les dossiers sont détectés</li>
+                    <li>Si vous ajoutez un nouveau dossier, il apparaîtra avec 🆕</li>
+                </ul>
+            </li>
+            <li><strong>Test Console :</strong>
+                <ul>
+                    <li>Ouvrir les outils de développement (F12)</li>
+                    <li>Aller dans l'onglet Console</li>
+                    <li>Cliquer sur Refresh → voir les logs détaillés</li>
+                </ul>
+            </li>
+        </ol>
+
+        <h3>🎯 Résultats attendus :</h3>
+        <ul>
+            <li>✅ Plus d'erreur 404 sur aucune page</li>
+            <li>✅ Assets ne disparaissent plus au premier clic</li>
+            <li>✅ Détection des fichiers dans les sous-dossiers</li>
+            <li>✅ Page racine détecte les nouveaux dossiers</li>
+            <li>✅ Messages d'erreur clairs si problème réseau</li>
+        </ul>
+
+        <h3>🔍 Debug :</h3>
+        <p>Si vous rencontrez encore des problèmes :</p>
+        <ul>
+            <li>Ouvrez la console du navigateur (F12)</li>
+            <li>Cherchez les messages commençant par 🔍, 📁, 🎯, 📊</li>
+            <li>Vérifiez les erreurs réseau dans l'onglet Network</li>
+            <li>Les logs montrent exactement ce qui est scanné et trouvé</li>
+        </ul>
+    </div>
+
+    <script>
+        // Auto-ouvrir la page textures pour test
+        setTimeout(() => {
+            if (confirm("Voulez-vous ouvrir la page Textures pour tester la correction ?")) {
+                window.open('assets/textures/index.html', '_blank');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
