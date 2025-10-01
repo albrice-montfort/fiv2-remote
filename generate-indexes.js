@@ -445,7 +445,7 @@ function generateIndexPage(category, files, basePath) {
         // Fonction principale pour rafraîchir les fichiers
         async function refreshFiles() {
             const btn = document.querySelector('.refresh-btn');
-            
+
             // Chercher le conteneur principal (celui qui contient soit .assets-grid soit .empty-state)
             let container = document.querySelector('.assets-grid');
             if (!container) {
@@ -469,7 +469,7 @@ function generateIndexPage(category, files, basePath) {
             } else {
                 container = container.parentNode; // Prendre le parent de .assets-grid
             }
-            
+
             if (!container) {
                 showStatus('❌ Impossible de trouver le conteneur', true);
                 return;
@@ -485,7 +485,7 @@ function generateIndexPage(category, files, basePath) {
                 console.log(\`🔍 Scanning: \${apiUrl}\`);
                 console.log(\`📁 Category: \${currentCategory}\`);
                 console.log(\`🎯 Supported extensions: \`, supportedExtensions);
-                
+
                 const validFiles = await scanDirectory(apiUrl);
                 console.log(\`📊 Files found: \`, validFiles);
 

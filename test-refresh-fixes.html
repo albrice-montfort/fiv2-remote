@@ -49,50 +49,50 @@
 <body>
     <div class="test-info">
         <h1>🔧 Test des Corrections du Bouton Refresh</h1>
-        
+
         <h3>🐛 Problèmes identifiés et corrigés :</h3>
-        
+
         <div class="bug-item">
             <strong>Problème 1 :</strong> Assets disparaissent au premier clic sur Textures
             <br><strong>Cause :</strong> Mauvaise sélection du conteneur DOM
         </div>
-        
+
         <div class="bug-item">
             <strong>Problème 2 :</strong> Erreur 404 au deuxième clic
             <br><strong>Cause :</strong> Conteneur détruit, plus de référence valide
         </div>
-        
+
         <div class="bug-item">
             <strong>Problème 3 :</strong> Dossier textures vide alors qu'il contient des sous-dossiers
             <br><strong>Cause :</strong> Pas de scan récursif des sous-dossiers
         </div>
 
         <h3>✅ Corrections apportées :</h3>
-        
+
         <div class="fix-item">
             <strong>Fix 1 :</strong> Amélioration de la logique de sélection du conteneur
             <br>→ Recherche intelligente du conteneur parent
             <br>→ Création automatique si nécessaire
         </div>
-        
+
         <div class="fix-item">
             <strong>Fix 2 :</strong> Gestion robuste des conteneurs DOM
             <br>→ Préservation de la structure après refresh
             <br>→ Fallback gracieux si conteneur introuvable
         </div>
-        
+
         <div class="fix-item">
             <strong>Fix 3 :</strong> Scan récursif des sous-dossiers
             <br>→ Détection automatique des fichiers dans hd/, compressed/, etc.
             <br>→ Affichage du chemin complet (ex: "hd/texture.png")
         </div>
-        
+
         <div class="fix-item">
             <strong>Fix 4 :</strong> Debug amélioré
             <br>→ Logs détaillés dans la console du navigateur
             <br>→ Messages d'erreur plus explicites
         </div>
-        
+
         <div class="fix-item">
             <strong>Fix 5 :</strong> Bouton refresh sur la page racine
             <br>→ Détection automatique de nouveaux dossiers
