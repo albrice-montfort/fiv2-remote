@@ -380,14 +380,14 @@ function generateIndexPage(category, files, basePath) {
         // Fonction pour scanner récursivement les dossiers
         async function scanDirectory(apiUrl, path = '') {
             const validFiles = [];
-            
+
             try {
                 const response = await fetch(apiUrl, {
                     headers: {
                         'User-Agent': 'Fractal-Innov-Assets-Browser/1.0'
                     }
                 });
-                
+
                 if (!response.ok) {
                     if (response.status === 404) {
                         console.log(\`Dossier vide ou inexistant: \${apiUrl}\`);
@@ -397,21 +397,21 @@ function generateIndexPage(category, files, basePath) {
                 }
 
                 const items = await response.json();
-                
+
                 for (const item of items) {
                     if (item.type === 'file' && item.name !== '.DS_Store' && item.name !== '.gitkeep') {
                         const extension = '.' + item.name.split('.').pop().toLowerCase();
                         if (supportedExtensions.includes(extension)) {
                             try {
                                 // Obtenir la taille du fichier
-                                const fileResponse = await fetch(item.download_url, { 
+                                const fileResponse = await fetch(item.download_url, {
                                     method: 'HEAD',
                                     headers: {
                                         'User-Agent': 'Fractal-Innov-Assets-Browser/1.0'
                                     }
                                 });
                                 const size = fileResponse.headers.get('content-length') || item.size;
-                                
+
                                 validFiles.push({
                                     name: path ? \`\${path}/\${item.name}\` : item.name,
                                     size: formatFileSize(parseInt(size)),
@@ -438,7 +438,7 @@ function generateIndexPage(category, files, basePath) {
             } catch (error) {
                 console.warn(\`Erreur lors du scan de \${apiUrl}:\`, error);
             }
-            
+
             return validFiles;
         }
 
@@ -446,7 +446,7 @@ function generateIndexPage(category, files, basePath) {
         async function refreshFiles() {
             const btn = document.querySelector('.refresh-btn');
             const container = document.querySelector('.assets-grid') || document.querySelector('.empty-state')?.parentNode;
-            
+
             if (!container) {
                 showStatus('❌ Impossible de trouver le conteneur', true);
                 return;
@@ -483,7 +483,7 @@ function generateIndexPage(category, files, basePath) {
             } catch (error) {
                 console.error('Erreur lors du refresh:', error);
                 let errorMessage = error.message;
-                
+
                 // Messages d'erreur plus explicites
                 if (error.message.includes('404')) {
                     errorMessage = 'Dossier non trouvé ou vide';
@@ -492,7 +492,7 @@ function generateIndexPage(category, files, basePath) {
                 } else if (error.message.includes('Failed to fetch')) {
                     errorMessage = 'Problème de connexion réseau';
                 }
-                
+
                 showStatus(\`❌ \${errorMessage}\`, true);
             } finally {
                 btn.classList.remove('loading');

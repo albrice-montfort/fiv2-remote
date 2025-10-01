@@ -63,8 +63,8 @@ if (error.message.includes('404')) {
 
 ### **4. Filtrage des fichiers système**
 ```javascript
-if (item.type === 'file' && 
-    item.name !== '.DS_Store' && 
+if (item.type === 'file' &&
+    item.name !== '.DS_Store' &&
     item.name !== '.gitkeep') {
     // Traiter le fichier
 }
