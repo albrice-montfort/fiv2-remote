@@ -12,7 +12,7 @@ Le dossier `chunks` existe localement mais n'a pas été poussé vers GitHub, c'
 ls -la assets/chunks/
 # Vous devriez voir :
 # - chunk_panel00.glb
-# - chunk_panel01.glb  
+# - chunk_panel01.glb
 # - chunk_panel020304.glb
 # - Fiv2_Chunk_MandelBulb.glb
 # - index.html
