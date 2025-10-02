@@ -172,10 +172,80 @@
         </div>
 
         
-            <div class="empty-state">
-                <h3>📁 Aucun fichier trouvé</h3>
-                <p>Ajoutez des fichiers dans ce dossier et relancez le script</p>
-                <p>Ils apparaîtront automatiquement ici !</p>
+            <div class="assets-grid">
+                
+        <div class="asset-item">
+            <div class="asset-preview">🖼️</div>
+            <div class="asset-info">
+                <div class="asset-name">FIv2_UI01A_2k.png</div>
+                <div class="asset-details">.PNG - 516.36 KB</div>
+            </div>
+            <a href="https://albrice-montfort.github.io/fiv2-remote/assets/textures/hd/FIv2_UI01A_2k.png" class="download-btn" download>📥 Télécharger</a>
+        </div>
+    
+        <div class="asset-item">
+            <div class="asset-preview">🖼️</div>
+            <div class="asset-info">
+                <div class="asset-name">FIv2_UI01_2k.PNG</div>
+                <div class="asset-details">.PNG - 533.93 KB</div>
+            </div>
+            <a href="https://albrice-montfort.github.io/fiv2-remote/assets/textures/hd/FIv2_UI01_2k.PNG" class="download-btn" download>📥 Télécharger</a>
+        </div>
+    
+        <div class="asset-item">
+            <div class="asset-preview">🖼️</div>
+            <div class="asset-info">
+                <div class="asset-name">FIv2_UI02_2k.png</div>
+                <div class="asset-details">.PNG - 1.1 MB</div>
+            </div>
+            <a href="https://albrice-montfort.github.io/fiv2-remote/assets/textures/hd/FIv2_UI02_2k.png" class="download-btn" download>📥 Télécharger</a>
+        </div>
+    
+        <div class="asset-item">
+            <div class="asset-preview">🖼️</div>
+            <div class="asset-info">
+                <div class="asset-name">FIv2_UI03_2k.png</div>
+                <div class="asset-details">.PNG - 453.11 KB</div>
+            </div>
+            <a href="https://albrice-montfort.github.io/fiv2-remote/assets/textures/hd/FIv2_UI03_2k.png" class="download-btn" download>📥 Télécharger</a>
+        </div>
+    
+        <div class="asset-item">
+            <div class="asset-preview">🖼️</div>
+            <div class="asset-info">
+                <div class="asset-name">FIv2_UI04_2k.png</div>
+                <div class="asset-details">.PNG - 1.85 MB</div>
+            </div>
+            <a href="https://albrice-montfort.github.io/fiv2-remote/assets/textures/hd/FIv2_UI04_2k.png" class="download-btn" download>📥 Télécharger</a>
+        </div>
+    
+        <div class="asset-item">
+            <div class="asset-preview">🖼️</div>
+            <div class="asset-info">
+                <div class="asset-name">FIv2_UI05_2k.PNG</div>
+                <div class="asset-details">.PNG - 667.82 KB</div>
+            </div>
+            <a href="https://albrice-montfort.github.io/fiv2-remote/assets/textures/hd/FIv2_UI05_2k.PNG" class="download-btn" download>📥 Télécharger</a>
+        </div>
+    
+        <div class="asset-item">
+            <div class="asset-preview">🖼️</div>
+            <div class="asset-info">
+                <div class="asset-name">FIv2_UI06_2k.png</div>
+                <div class="asset-details">.PNG - 1.53 MB</div>
+            </div>
+            <a href="https://albrice-montfort.github.io/fiv2-remote/assets/textures/hd/FIv2_UI06_2k.png" class="download-btn" download>📥 Télécharger</a>
+        </div>
+    
+        <div class="asset-item">
+            <div class="asset-preview">🖼️</div>
+            <div class="asset-info">
+                <div class="asset-name">FIv2_UI07_2k.PNG</div>
+                <div class="asset-details">.PNG - 488.32 KB</div>
+            </div>
+            <a href="https://albrice-montfort.github.io/fiv2-remote/assets/textures/hd/FIv2_UI07_2k.PNG" class="download-btn" download>📥 Télécharger</a>
+        </div>
+    
             </div>
         
 
@@ -242,6 +312,7 @@
         // Fonction pour scanner récursivement les dossiers
         async function scanDirectory(apiUrl, path = '') {
             const validFiles = [];
+            const supportedExtensions = ['.glb', '.gltf', '.png', '.jpg', '.jpeg', '.webp', '.ktx2', '.hdr', '.exr', '.mp3', '.wav', '.ogg', '.m4a'];
 
             try {
                 const response = await fetch(apiUrl, {
@@ -307,7 +378,7 @@
         // Fonction principale pour rafraîchir les fichiers
         async function refreshFiles() {
             const btn = document.querySelector('.refresh-btn');
-            
+
             // Chercher le conteneur principal (celui qui contient soit .assets-grid soit .empty-state)
             let container = document.querySelector('.assets-grid');
             if (!container) {
@@ -331,7 +402,7 @@
             } else {
                 container = container.parentNode; // Prendre le parent de .assets-grid
             }
-            
+
             if (!container) {
                 showStatus('❌ Impossible de trouver le conteneur', true);
                 return;
@@ -347,7 +418,7 @@
                 console.log(`🔍 Scanning: ${apiUrl}`);
                 console.log(`📁 Category: ${currentCategory}`);
                 console.log(`🎯 Supported extensions: `, supportedExtensions);
-                
+
                 const validFiles = await scanDirectory(apiUrl);
                 console.log(`📊 Files found: `, validFiles);
 

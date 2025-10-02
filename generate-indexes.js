@@ -37,33 +37,39 @@ function formatFileSize(bytes) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
-// Fonction pour scanner un dossier
+// Fonction pour scanner un dossier (récursif)
 function scanDirectory(dirPath, extensions) {
     const files = [];
 
-    try {
-        const items = fs.readdirSync(dirPath);
+    function scanRecursive(currentPath) {
+        try {
+            const items = fs.readdirSync(currentPath);
 
-        for (const item of items) {
-            const fullPath = path.join(dirPath, item);
-            const stat = fs.statSync(fullPath);
+            for (const item of items) {
+                const fullPath = path.join(currentPath, item);
+                const stat = fs.statSync(fullPath);
 
-            if (stat.isFile()) {
-                const ext = path.extname(item).toLowerCase();
-                if (extensions.includes(ext)) {
-                    files.push({
-                        name: item,
-                        size: getFileSize(fullPath),
-                        extension: ext,
-                        path: fullPath
-                    });
+                if (stat.isFile()) {
+                    const ext = path.extname(item).toLowerCase();
+                    if (extensions.includes(ext)) {
+                        files.push({
+                            name: item,
+                            size: getFileSize(fullPath),
+                            extension: ext,
+                            path: fullPath
+                        });
+                    }
+                } else if (stat.isDirectory()) {
+                    // Scanner récursivement les sous-dossiers
+                    scanRecursive(fullPath);
                 }
             }
+        } catch (error) {
+            console.log(`Erreur lors du scan de ${currentPath}:`, error.message);
         }
-    } catch (error) {
-        console.log(`Erreur lors du scan de ${dirPath}:`, error.message);
     }
 
+    scanRecursive(dirPath);
     return files;
 }
 
@@ -380,6 +386,7 @@ function generateIndexPage(category, files, basePath) {
         // Fonction pour scanner récursivement les dossiers
         async function scanDirectory(apiUrl, path = '') {
             const validFiles = [];
+            const supportedExtensions = ['.glb', '.gltf', '.png', '.jpg', '.jpeg', '.webp', '.ktx2', '.hdr', '.exr', '.mp3', '.wav', '.ogg', '.m4a'];
 
             try {
                 const response = await fetch(apiUrl, {

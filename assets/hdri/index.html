@@ -267,6 +267,7 @@
         // Fonction pour scanner récursivement les dossiers
         async function scanDirectory(apiUrl, path = '') {
             const validFiles = [];
+            const supportedExtensions = ['.glb', '.gltf', '.png', '.jpg', '.jpeg', '.webp', '.ktx2', '.hdr', '.exr', '.mp3', '.wav', '.ogg', '.m4a'];
 
             try {
                 const response = await fetch(apiUrl, {
@@ -332,7 +333,7 @@
         // Fonction principale pour rafraîchir les fichiers
         async function refreshFiles() {
             const btn = document.querySelector('.refresh-btn');
-            
+
             // Chercher le conteneur principal (celui qui contient soit .assets-grid soit .empty-state)
             let container = document.querySelector('.assets-grid');
             if (!container) {
@@ -356,7 +357,7 @@
             } else {
                 container = container.parentNode; // Prendre le parent de .assets-grid
             }
-            
+
             if (!container) {
                 showStatus('❌ Impossible de trouver le conteneur', true);
                 return;
@@ -372,7 +373,7 @@
                 console.log(`🔍 Scanning: ${apiUrl}`);
                 console.log(`📁 Category: ${currentCategory}`);
                 console.log(`🎯 Supported extensions: `, supportedExtensions);
-                
+
                 const validFiles = await scanDirectory(apiUrl);
                 console.log(`📊 Files found: `, validFiles);
 
